@@ -1,0 +1,4 @@
+Bandwidth: 0.00 MB/s
+Bandwidth: 2.82 MB/s
+Bandwidth: 0.00 MB/s
+Bandwidth: 5.05 MB/s
