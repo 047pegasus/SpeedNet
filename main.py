@@ -1,7 +1,6 @@
 import asyncio
 import time
 from ping3 import ping
-from pygments.styles.dracula import yellow
 from textual.app import App, ComposeResult
 from textual.widgets import Input, Button, Label, Static, ProgressBar
 from textual.reactive import Reactive
@@ -119,12 +118,12 @@ class BandwidthPanel(Static):
         except Exception as e:
             self.update_bandwidth_result(f"Error calculating bandwidth: {str(e)}", "red")
         finally:
-            self.calculating = False
+            self.calculating = Reactive[False]
 
     async def get_icmp_rtt(self, ip_address: str) -> float:
         """Get ICMP round-trip time (RTT) in seconds."""
         try:
-            rtt = ping(ip_address, timeout=1)
+            rtt = ping(ip_address, timeout=1, size=56)
             if rtt:
                 return rtt  # Return RTT in seconds
         except Exception as e:
