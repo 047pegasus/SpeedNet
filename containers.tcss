@@ -1,0 +1,153 @@
+Screen {
+    align: center middle;
+}
+
+Button{
+    content-align: center middle;
+    background: green;
+    border: solid white;
+    color: $text;
+    margin: 1 5;
+    padding: 0 1;
+    text-style: reverse;
+}
+
+.verticalinput{
+    background: $background;
+    align: center middle;
+    width: 40%;
+}
+
+#ip_label{
+    background: green;
+    color: white;
+    margin: 1 5;
+    width: auto;
+    text-align: center;
+}
+
+#ip_input{
+    margin: 0;
+    width: 40%;
+    border: solid blue;
+    text-align: center;
+}
+
+#protocol_selection{
+    color: green;
+    text-align: center;
+    border: solid white;
+    width: 40%;
+    margin: 0 11;
+}
+
+.horizontalinput{
+    align: center middle;
+    height: 1fr;
+    margin: 1 0;
+}
+
+.horizontalbuttons{
+    height: auto;
+    border: dashed green;
+    align: center middle;
+    margin: 0 0;
+    background: blue 5%;
+}
+
+#start_test_button{
+    width: auto;
+}
+
+#start_suite_test_button{
+    width:auto;
+    background: violet 40%; 
+}
+
+#graph_reset_button{
+    width: auto;
+    background: red;
+}
+
+.horizontalprogress{
+    height:0.5fr;
+    margin: 1 0;
+    align: center middle;
+}
+
+#result_label{
+    width: 60%;
+    content-align: left middle;
+    margin: -1 5;
+    border: solid green;
+    background: green 20%;
+}
+
+#progress_bar{
+    color: white;
+    margin: 0 0 0 2;
+    background: violet 20%;
+}
+
+#bandwidth_plot{
+    height: 65%;
+}
+
+QuitScreen {
+    align: center middle;
+}
+
+#dialog {
+    grid-size: 2;
+    grid-gutter: 1 2;
+    grid-rows: 1fr 5;
+    padding: 0 1;
+    width: 60;
+    height: 11;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+#question {
+    column-span: 2;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+    background: red 10%;
+}
+
+#quit{
+    background: red;
+}
+
+.errored_protocols_dialog{
+    grid-size: 2;
+    grid-gutter: 1 2;
+    grid-rows: 1fr 5;
+    padding: 0 1;
+    width: 60;
+    height: 20;
+    border: thick $background 80%;
+    background: $surface;
+    align: center middle;
+}
+
+#error_label{
+    column-span: 2;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+    background: red 10%;
+}
+
+#error_list{
+    column-span: 2;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+}
+
+#ok_buton{
+    width: 100%;
+    background: red 100%;
+}
