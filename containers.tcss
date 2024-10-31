@@ -78,15 +78,25 @@ Button{
 #result_label{
     width: 60%;
     content-align: left middle;
-    margin: -1 5;
+    margin: 0 5;
     border: solid green;
     background: green 20%;
 }
 
+#progress_label{
+    margin: 1 2;
+}
+
 #progress_bar{
     color: white;
-    margin: 0 0 0 2;
+    margin: 1 0 0 2;
     background: violet 20%;
+}
+
+#loading_indicator{
+    color: green 50%;
+    width: 1fr;
+    margin: 0 2;
 }
 
 #bandwidth_plot{
@@ -145,9 +155,11 @@ QuitScreen {
     height: 1fr;
     width: 1fr;
     content-align: center middle;
+    border: dashed white;
 }
 
-#ok_buton{
-    width: 100%;
-    background: red 100%;
+#ok_button{
+    width: auto;
+    background: red 40%;
+    border: dashed white;
 }

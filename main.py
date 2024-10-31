@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Button, Label, Input, ProgressBar, Footer, Header, SelectionList, Pretty
+from textual.widgets import Button, Label, Input, ProgressBar, Footer, Header, SelectionList, Pretty, LoadingIndicator
 from textual.widgets.selection_list import Selection
 from textual.containers import Horizontal, Vertical, Grid
 from textual_plotext import PlotextPlot
@@ -39,7 +39,7 @@ class ProtocolErrored(Screen):
         yield Grid(
             Label("The following protocols errored out during testing:", id="error_label"),
             Pretty(TEMP, id="error_list"),
-            Button("Continue", variant="primary", id="ok_button"),
+            Button("Continue", id="ok_button"),
             classes="errored_protocols_dialog",
         )
 
@@ -52,7 +52,7 @@ class SpeedNet(App):
     BINDINGS = [("q", "request_quit", "Quit")]
 
     def compose(self) -> ComposeResult:
-        yield Header("SpeedNet: v0.1.1")
+        yield Header(icon="🛜")
 
         # Input section for IP address and protocol selection
         yield Horizontal(
@@ -82,6 +82,7 @@ class SpeedNet(App):
         yield Horizontal(
             Label("Progress: ", id="progress_label"),
             ProgressBar(id="progress_bar", total=100),
+            LoadingIndicator(id="loading_indicator"),
             Label("Result: ", id="result_label"),
             classes="horizontalprogress",
         )
@@ -101,6 +102,7 @@ class SpeedNet(App):
         self.query_one("#start_suite_test_button").tooltip = "Starts a complete suite of tests for all the protocols on given address."
         self.query_one("#start_test_button").tooltip = "Starts the test for selected protocol on given address."
         self.query_one("#graph_reset_button").tooltip = "Resets the graph and test context."
+        self.query_one("#loading_indicator").display = False
         self.time_data = []
         self.bandwidth_data = []
         self.selected_protocol = []
@@ -125,6 +127,7 @@ class SpeedNet(App):
     async def on_graph_reset_button(self, event):
         self.time_data = []
         self.bandwidth_data = [0]
+        self.on_finish_test()
         graph = self.query_one("#bandwidth_plot", PlotextPlot)
         graph.refresh()
         plt = graph.plt  # Access the Plotext plt objectx
@@ -295,6 +298,9 @@ class SpeedNet(App):
         self.bandwidth_data = [0]  # Reset the bandwidth data
         self.time_data = [0]
 
+    def on_finish_test(self):
+        self.query(LoadingIndicator).remove()
+
     async def on_button_pressed(self, event):
         ip = self.query_one("#ip_input", Input).value
         if not ip:
@@ -302,6 +308,7 @@ class SpeedNet(App):
             return
 
         if event.button.id == "start_suite_test_button":
+            self.query(LoadingIndicator).set(display=True)
             self.selected_protocol = [0, 1, 2, 3]
             await self.start_bandwidth_test_icmp(ip)
             await self.start_bandwidth_test_udp(ip)
@@ -320,6 +327,7 @@ class SpeedNet(App):
 
         if event.button.id == "start_test_button":
             print(f"Starting test for IP: {ip} with protocols: {self.selected_protocol}")
+            self.query_one(LoadingIndicator).display = True
             if 0 in self.selected_protocol:
                 await self.start_bandwidth_test_icmp(ip)
             if 1 in self.selected_protocol:
@@ -340,6 +348,8 @@ class SpeedNet(App):
 
         if event.button.id == "graph_reset_button":
             await self.on_graph_reset_button(event)
+        
+        self.on_finish_test()
 
 if __name__ == "__main__":
     app = SpeedNet()
