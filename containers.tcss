@@ -78,15 +78,25 @@ Button{
 #result_label{
     width: 60%;
     content-align: left middle;
-    margin: -1 5;
+    margin: 0 5;
     border: solid green;
     background: green 20%;
 }
 
+#progress_label{
+    margin: 1 2;
+}
+
 #progress_bar{
     color: white;
-    margin: 0 0 0 2;
+    margin: 1 0 0 2;
     background: violet 20%;
+}
+
+#loading_indicator{
+    color: green 50%;
+    width: 1fr;
+    margin: 0 2;
 }
 
 #bandwidth_plot{
