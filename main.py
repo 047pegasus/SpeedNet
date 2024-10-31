@@ -39,7 +39,7 @@ class ProtocolErrored(Screen):
         yield Grid(
             Label("The following protocols errored out during testing:", id="error_label"),
             Pretty(TEMP, id="error_list"),
-            Button("Continue", variant="primary", id="ok_button"),
+            Button("Continue", id="ok_button"),
             classes="errored_protocols_dialog",
         )
 

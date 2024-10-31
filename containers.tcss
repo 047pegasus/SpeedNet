@@ -145,9 +145,11 @@ QuitScreen {
     height: 1fr;
     width: 1fr;
     content-align: center middle;
+    border: dashed white;
 }
 
-#ok_buton{
-    width: 100%;
-    background: red 100%;
+#ok_button{
+    width: auto;
+    background: red 40%;
+    border: dashed white;
 }
