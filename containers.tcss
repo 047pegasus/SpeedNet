@@ -70,13 +70,13 @@ Button{
 }
 
 .horizontalprogress{
-    height:0.5fr;
+    height: 1fr;
     margin: 1 0;
     align: center middle;
 }
 
 #result_label{
-    width: 60%;
+    width: 65%;
     content-align: left middle;
     margin: 0 5;
     border: solid green;

@@ -11,6 +11,7 @@ import asyncio
 import socket
 import requests
 from ping3 import ping
+import validators
 
 PROTOCOL = ["ICMP", "UDP", "TCP", "HTTP"]
 TEMP = []
@@ -49,7 +50,10 @@ class ProtocolErrored(Screen):
 
 class SpeedNet(App):
     CSS_PATH = "containers.tcss"
-    BINDINGS = [("q", "request_quit", "Quit")]
+    BINDINGS = [
+        ("q", "request_quit", "Quit"),
+        ("r", "request_reset", "Reset")
+    ]
 
     def compose(self) -> ComposeResult:
         yield Header(icon="🛜")
@@ -95,6 +99,9 @@ class SpeedNet(App):
     def action_request_quit(self) -> None:
         self.push_screen(QuitScreen())
     
+    def action_request_reset(self) -> None:
+        self.on_graph_reset_button()
+    
     async def on_mount(self) -> None:
         self.title = "SpeedNet v0.1.1"
         self.sub_title = "Network Protocol Analysis & Speed Test Utility"
@@ -124,7 +131,7 @@ class SpeedNet(App):
         for button in buttons:
             button.disabled = disabled
 
-    async def on_graph_reset_button(self, event):
+    async def on_graph_reset_button(self, event=None):
         self.time_data = []
         self.bandwidth_data = [0]
         self.on_finish_test()
@@ -306,45 +313,50 @@ class SpeedNet(App):
         if not ip:
             self.query_one("#result_label", Label).update("Please enter an IP address!")
             return
-
-        if event.button.id == "start_suite_test_button":
-            self.query(LoadingIndicator).set(display=True)
-            self.selected_protocol = [0, 1, 2, 3]
-            await self.start_bandwidth_test_icmp(ip)
-            await self.start_bandwidth_test_udp(ip)
-            await self.start_bandwidth_test_tcp(ip)
-            await self.start_bandwidth_test_http(ip)
-            global TEMP, PROTOCOL
-            for i in self.selected_protocol:
-                TEMP.append(PROTOCOL[i])
-            for i in self.plotted_protocol:
-                if i in TEMP:
-                    TEMP.remove(i)
-            #remove duplicates from the TEMP list
-            TEMP = list(dict.fromkeys(TEMP))
-            print(f"Errored out protocols during testing: {TEMP}")
-            self.push_screen(ProtocolErrored())
-
-        if event.button.id == "start_test_button":
-            print(f"Starting test for IP: {ip} with protocols: {self.selected_protocol}")
-            self.query_one(LoadingIndicator).display = True
-            if 0 in self.selected_protocol:
+        validation = validators.ipv4(ip) or validators.ipv6(ip) or validators.domain(ip)
+        if validation == True:
+            if event.button.id == "start_suite_test_button":
+                self.query(LoadingIndicator).set(display=True)
+                self.selected_protocol = [0, 1, 2, 3]
                 await self.start_bandwidth_test_icmp(ip)
-            if 1 in self.selected_protocol:
                 await self.start_bandwidth_test_udp(ip)
-            if 2 in self.selected_protocol:
                 await self.start_bandwidth_test_tcp(ip)
-            if 3 in self.selected_protocol:
                 await self.start_bandwidth_test_http(ip)
-            for i in self.selected_protocol:
-                TEMP.append(PROTOCOL[i])
-            for i in self.plotted_protocol:
-                if i in TEMP:
-                    TEMP.remove(i)
-            #remove duplicates from the TEMP list
-            TEMP = list(dict.fromkeys(TEMP))
-            print(f"Errored out protocols during testing: {TEMP}")
-            self.push_screen(ProtocolErrored())
+                global TEMP, PROTOCOL
+                for i in self.selected_protocol:
+                    TEMP.append(PROTOCOL[i])
+                for i in self.plotted_protocol:
+                    if i in TEMP:
+                        TEMP.remove(i)
+                #remove duplicates from the TEMP list
+                TEMP = list(dict.fromkeys(TEMP))
+                print(f"Errored out protocols during testing: {TEMP}")
+                if TEMP is not None:
+                    self.push_screen(ProtocolErrored())
+
+            if event.button.id == "start_test_button":
+                print(f"Starting test for IP: {ip} with protocols: {self.selected_protocol}")
+                # self.query_one(LoadingIndicator).display = True
+                if 0 in self.selected_protocol:
+                    await self.start_bandwidth_test_icmp(ip)
+                if 1 in self.selected_protocol:
+                    await self.start_bandwidth_test_udp(ip)
+                if 2 in self.selected_protocol:
+                    await self.start_bandwidth_test_tcp(ip)
+                if 3 in self.selected_protocol:
+                    await self.start_bandwidth_test_http(ip)
+                for i in self.selected_protocol:
+                    TEMP.append(PROTOCOL[i])
+                for i in self.plotted_protocol:
+                    if i in TEMP:
+                        TEMP.remove(i)
+                #remove duplicates from the TEMP list
+                TEMP = list(dict.fromkeys(TEMP))
+                print(f"Errored out protocols during testing: {TEMP}")
+                if TEMP is not None:
+                    self.push_screen(ProtocolErrored())
+        else:
+            self.query_one("#result_label", Label).update("Please enter a valid IP or host address without protocol (eg. http://... or https://... ❌ || 127.0.0.1 or 192.168.x.x ✅) and then reset!")
 
         if event.button.id == "graph_reset_button":
             await self.on_graph_reset_button(event)
